@@ -1,2 +1,0 @@
-# Pomnub
-Concours bitcoin
