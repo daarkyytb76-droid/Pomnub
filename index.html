@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Pomnub</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    body {
+      position: fixed;
+      inset: 0;
+    }
+
+    /* Image */
+    #bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      z-index: 1;
+      display: none;
+    }
+
+    #bg.visible {
+      display: block;
+    }
+
+    /* Écran de démarrage */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #overlay.hidden {
+      display: none;
+    }
+
+    #playBtn {
+      appearance: none;
+      -webkit-appearance: none;
+
+      font-family: Arial, sans-serif;
+      font-size: 24px;
+      font-weight: bold;
+
+      color: white;
+      background: #ff9900;
+
+      border: 0;
+      border-radius: 12px;
+
+      padding: 20px 45px;
+
+      cursor: pointer;
+      touch-action: manipulation;
+
+      box-shadow: 0 4px 25px rgba(255, 153, 0, 0.45);
+    }
+
+    #playBtn:active {
+      transform: scale(0.96);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Image : 00100.jpg -->
+  <img
+    id="bg"
+    src="./00100.jpg"
+    alt=""
+  >
+
+  <!-- Audio : 11011.m4a -->
+  <audio
+    id="audio"
+    src="./11011.m4a"
+    preload="auto"
+    playsinline
+  ></audio>
+
+  <div id="overlay">
+    <button id="playBtn" type="button">
+      Continuer
+    </button>
+  </div>
+
+  <script>
+    const audio = document.getElementById("audio");
+    const bg = document.getElementById("bg");
+    const overlay = document.getElementById("overlay");
+    const playBtn = document.getElementById("playBtn");
+
+    let started = false;
+
+    async function start() {
+
+      if (started) return;
+      started = true;
+
+      // Afficher l'image
+      bg.classList.add("visible");
+
+      // Volume maximum
+      audio.volume = 1;
+
+      // Lancement du son après interaction utilisateur
+      try {
+        await audio.play();
+      } catch (error) {
+        console.log("Lecture audio impossible :", error);
+      }
+
+      // Cacher le bouton
+      overlay.classList.add("hidden");
+
+      // Plein écran si le navigateur l'autorise
+      try {
+        if (document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen();
+        }
+      } catch (error) {
+        console.log("Plein écran non disponible.");
+      }
+    }
+
+    playBtn.addEventListener("click", start);
+
+    // Compatible tactile
+    playBtn.addEventListener("touchend", function(e) {
+      e.preventDefault();
+      start();
+    }, { passive: false });
+
+  </script>
+
+</body>
+</html>
